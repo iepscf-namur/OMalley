@@ -1,0 +1,82 @@
+<div class="container" style="padding-bottom:10px;padding-top: 100px">
+    <h2>User list</h2>
+    <form #form="ngForm" class="form-horizontal" id="form_data">
+        <div>
+            <div class="form-row" style="padding-bottom:0px;padding-top: 10px">
+                <div class="col">
+                    <label class="control-label">Login</label>
+                    <input type="text" [(ngModel)]="UserLogin" name="log" id="UserLogin" placeholder="Enter login" class="form-control">
+                </div>
+                <div class="col">
+                    <label class="control-label">Username</label>
+                    <input type="text" [(ngModel)]="UserUserName" name="userN" id="UserUserName" placeholder="Enter username" class="form-control">
+                </div>
+            </div>
+            <div class="form-row" style="padding-bottom:10px;padding-top: 10px">
+                <div class="col">
+                    <label class="control-label">Password</label>
+                    <input type="text" [(ngModel)]="UserPassword" name="pass" id="UserPassword" placeholder="Enter password" class="form-control">
+                </div>
+                <div class="col">
+                    <label class="control-label">Role</label>
+                    <input type="text" [(ngModel)]="UserIdRoleUser" name="idRoleU" id="UserIdRoleUser" placeholder="Enter role" class="form-control">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12" style="padding-bottom:0px;padding-top: 15px">
+                    <button style="margin:5px;" type="button" [class]="button" (click)="methodSwitch(form)">{{ buttonText }}</button>
+                    <button style="margin:5px;" type="button" class="btn btn-secondary" (click)="resetForm()">Annuler</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container" style="padding-bottom:10px;padding-top: 10px">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- A laisser en commentaire
+                    <mat-form-field>
+                        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
+                    </mat-form-field> -->
+
+                    <!-- https://material.angular.io/components/table/overview#advanced-data-sources -->
+                    <table mat-table [dataSource]="myDataSource" matSort style="background-color: #e8eef2">
+                        <ng-container matColumnDef="login">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Login </th>
+                            <td mat-cell *matCellDef="let element"> {{element.login}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="userName">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> User Name </th>
+                            <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="idRoleUser">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Id Role </th>
+                            <td mat-cell *matCellDef="let element"> {{element.idRoleUser}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="actions">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Actions </th>
+                            <td mat-cell *matCellDef="let user">
+                                <button mat-flat-button [matMenuTriggerFor]="menu" >Actions</button>
+                                <mat-menu #menu="matMenu">
+                                    <button mat-menu-item (click)="retrieveUserData(user)">Editer</button>
+                                    <button mat-menu-item (click)="deleteUser(user)">Supprimer</button>
+                                </mat-menu>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+                        <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+                    </table>
+
+                    <mat-paginator  [length]="length"
+                        [pageSize]="pageSize"
+                        [pageSizeOptions]="pageSizeOptions"
+                        showFirstLastButtons
+                        style ="background-color: #e8eef2"
+                        (page)="pageEvent = $event">
+                    </mat-paginator>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

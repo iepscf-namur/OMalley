@@ -1,0 +1,48 @@
+#home {
+    background: url('../../assets/img/GuitareFolk.jpg') no-repeat center center fixed;
+    background-position: 0%;
+    color: #f6f8f8;
+    display: table;
+    height: 700px;
+    position: relative;
+    width: 100%;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover; 
+  }
+  
+  #home h1 {
+    text-transform: uppercase;
+    color: white;
+    font-size: 70px;
+    font-weight: bold;
+  }
+  
+  #home h2 {
+    text-transform: uppercase;
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    
+  }
+  
+  #home h3 {
+    text-transform: uppercase;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  #home svg {
+   padding-top: 20px;
+   padding-bottom: 20px;
+  }
+
+  .text-vcenter {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  

@@ -1,0 +1,46 @@
+.footer {
+    background-color: #343a40;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12);
+    text-align: center;
+}
+    
+.footer .container{
+    padding-top: 20px;
+    padding-bottom: 0px;
+}
+    
+.footer-copyright {
+    color: white;
+    font-size: 14px;
+}
+  
+#links {
+    background-color: white;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12);
+    /*font-weight: normal;*/
+}
+    
+#links .container {
+    padding-top: 30px;
+    padding-bottom: 20px;
+}
+    
+#links p {
+    color: #343a40;
+}
+    
+#links .footer-links {
+    list-style: none;
+    color: black;
+    /*font-weight: normal;*/
+    font-size: 14px;
+}
+    
+#links .about_foot {
+    font-size: 14px;
+}
+    
+#links .footer-links a {
+    text-decoration: none;
+    color: inherit;
+}

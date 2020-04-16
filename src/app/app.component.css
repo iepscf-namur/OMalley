@@ -1,0 +1,12 @@
+html, body {
+    min-height: 100%;
+    width: 100%;
+    font-family: 'Quicksand', sans-serif;
+  
+    margin-right: 0 !important;
+    line-height: 140%;
+}
+
+.content {
+    min-height: calc(100vh - 295px);
+}

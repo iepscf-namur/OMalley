@@ -1,0 +1,27 @@
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Login</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form #form="ngForm">
+            <div class="form-group">
+                <label for="login" class="col-form-label">Utilisateur</label>
+                <input type="text" class="form-control" [(ngModel)]="login" id="login" name="login" value="">
+            </div>
+            <div class="form-group">
+                <label for="password" class="col-form-label">Mot de passe</label>
+                <input type="password" class="form-control" [(ngModel)]="password" id="password" name="password">
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="[modal.close('Cancel click')]">Annuler</button>
+        <button type="button" class="btn btn-info" (click)="[modal.close('Save click'), methodSwitch(form)]">Valider</button>
+    </div>
+
+</ng-template>
+
+<button [class]="button" type="button" style="margin-left: 10px" (click)="open(content)">{{ buttonText }}</button>
