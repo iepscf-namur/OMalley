@@ -29,25 +29,6 @@ export abstract class DataServiceComponent {
   };
   
   getAll() {
-    //Adding the token in the request header 
-    
-    /*
-    let headers = new HttpHeaders();
-    let token = localStorage.getItem('token');
-    console.log(token);
-    headers.append('Authorization', 'Bearer ' + token);
-    let options = {headers : headers};
-    */
-   
-    /*
-    let token = localStorage.getItem('token');
-    var header = {
-    headers: new HttpHeaders()
-      .set('Content-Type', 'application/json; charset=utf-8')
-      .set('Authorization', 'Bearer ' + token)
-    }
-    */
-
     //We are now using an Interceptor to add Authorization in requests headers
     return this.httpClient.get(this.url).pipe(catchError(this.handleError));
   };
@@ -57,8 +38,6 @@ export abstract class DataServiceComponent {
   };
   
   create(ressource){
-    console.log(ressource);
-    let myJson = JSON.stringify(ressource);
     return this.httpClient.post(this.url, JSON.stringify(ressource)).pipe(catchError(this.handleError));
   }
 

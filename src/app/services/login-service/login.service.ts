@@ -82,16 +82,10 @@ export class LoginService extends DataServiceComponent {
   }
 
   getCurrentUser() {
-    // let token = sessionStorage.getItem('token');
     let token = this.cookieService.get('token');
-    if (!token)
-    return false;
+    if (!token) return false;
 
     let jwtHelper = new JwtHelperService();
-
-    // let temp = jwtHelper.decodeToken(token)
-    // console.log(temp)
-
     return jwtHelper.decodeToken(token);
   }
 

@@ -58,16 +58,16 @@ export class UserComponent implements OnInit {
    UserUserName: string = '';
    UserPassword: string = '';
    UserIdRoleUser: string ='';
-//   OldUserLogin: string = '';
-//   OldUserUserName: string = '';
-//   OldUserPassword: string = '';
-//   OldUserIdRoleUser: string = '';
+   OldUserLogin: string = '';
+   OldUserUserName: string = '';
+   OldUserPassword: string = '';
+   OldUserIdRoleUser: string = '';
 
    button = "btn btn-danger";
    buttonText = "Ajouter";
-//   method = "createUser";
+   method = "createUser";
 
-//   index = null;
+   index = null;
 
    ngOnInit(): void {
       this.myDataSource.paginator = this.paginator;
@@ -75,14 +75,13 @@ export class UserComponent implements OnInit {
 
       this.service.getAll()
       .subscribe(response =>  {
-         console.log(response);
          this.ELEMENT_DATA = response as UserElement[];
          this.myDataSource.data = this.ELEMENT_DATA;
-         // this.showToasterSuccess("Data loaded successfully", "Users")
       });
    }
 
 //   onItemSelect(item: any) {
+//      this.showToasterError("item selected","onitemselect");
 //     console.log(item);
 //   }
 
@@ -91,140 +90,148 @@ export class UserComponent implements OnInit {
 //   }
 
    methodSwitch(form){
-//     console.log("switch form");
-//     if (this.method == "createUser"){
-//       this.createUser(form);
-//     } else {
-//       this.updateUser(form);
-//     }
+      if (this.method == "createUser"){
+         this.createUser(form);
+      } else {
+         this.updateUser(form);
+      }
    }    
   
-//   getIndex(user){
-//     let index = this.ELEMENT_DATA.indexOf(user);
-//     return index;
-//   }
-
-//   createUser(input: HTMLInputElement){
-
-//     let user = input.value;
-
-//     this.service.create(user)
-//       .subscribe(
-//         response => {
-//           user['login'] = response['log'];
-//           user['userName'] = response['userN'];
-//           user['password'] = response['pass'];
-//           user['idRoleUser'] = response['idRoleU'];
-        
-//           this.ELEMENT_DATA.splice(0, 0, user as any);
-//           this.myDataSource.data = this.ELEMENT_DATA;
-//           console.log(response);
-//           this.resetForm();
-//         },
-//         (error: AppError) => {
-//           if (error instanceof BadRequest) {
-//             //this.form.setErrors(error.originalError);
-// //            this.sharedSnackBarMessage.changeMessage("Cet utilisateur existe deja");
-// //            this.snackBarService.openDangerSnackBar(SnackbarMessageComponent);
-//           } else {
-//             throw error;
-//           }
-//         }
-//       )
-//   }
-
-   deleteUser(user) {
-
-//     this.service.delete(user.login)
-    
-//     .subscribe(response => {
-//          console.log(response);
-//          //On va maintenant delete le secteur dans notre array
-//          this.ELEMENT_DATA.splice(this.getIndex(user),1);
-//          this.myDataSource.data = this.ELEMENT_DATA;
-
-//          //this.sharedSnackBarMessage.changeMessage("Utilisateur supprimé avec succes !");
-//          //this.snackBarService.openSuccessSnackBar(SnackbarMessageComponent);
-//     }, (error : AppError) => {
-//         if (error instanceof NotFoundError){
-//           //this.sharedSnackBarMessage.changeMessage("Cet utilisateur a déjà été supprimé");
-//           //this.snackBarService.openDangerSnackBar(SnackbarMessageComponent);
-//           throw error;
-//         }
-//         else throw error;
-//     });
-
+   getIndex(user){
+      let index = this.ELEMENT_DATA.indexOf(user);
+      return index;
    }
 
-//   updateUser(input: HTMLInputElement) {
+   createUser(input: HTMLInputElement){
+      if ((input.value['login'] == "") || (input.value['password'] == "")) {
+         this.showToasterError("Le nom ou le mot de passe ne peuvent être vides.", "Users")
+      } else {
+         // Create the array to pass. e.g. :
+         // [{"login": "titi@hotmail.be","password": "mytiti123","userName": "titi","idRoleUser": 0}]
+         let theLogin = input.value['login'];
+         let thePassword = input.value['password'];
+         let theUserName = input.value['userName'];
+         let theIdRoleUser = input.value['idRoleUser'];
+         let user = [{ login: theLogin, password: thePassword, userName: theUserName, idRoleUser: theIdRoleUser }];
 
-//     let user = input.value;
+         this.service.create(user)
+         .subscribe(
+            response => {
+               user['login'] = theLogin;
+               user['userName'] = thePassword;
+               user['password'] = theUserName;
+               user['idRoleUser'] = theIdRoleUser;
+        
+               this.ELEMENT_DATA.splice(0, 0, user as any);
+               this.myDataSource.data = this.ELEMENT_DATA;
+               this.resetForm();
+               this.showToasterSuccess("Utilisateur ajouté", "Users");
+            },
+            (error: AppError) => {
+               if (error instanceof BadRequest) {
+                  this.showToasterError("Cet utilisateur existe deja", "Users");
+               } else {
+                  throw error;
+               }
+            }
+         )
+      }
+   }
 
-//     if (user['login'] != this.OldUserLogin)
-//       {
-//       this.service.update(user,this.OldUserLogin)
-//         .subscribe(
-//           response => {
-//             console.log(response);
+   deleteUser(user) {
+      
+      this.service.delete("\"" + user.login + "\"")
+      .subscribe(response => {
+         //On va maintenant delete le secteur dans notre array
+         this.ELEMENT_DATA.splice(this.getIndex(user),1);
+         this.myDataSource.data = this.ELEMENT_DATA;
+         this.showToasterSuccess("Utilisateur supprimé avec succès", "Users");
+      }, (error : AppError) => {
+         if (error instanceof NotFoundError){
+            this.showToasterError("Cet utilisateur a déjà été supprimé", "Users");
+            throw error;
+         }
+         else throw error;
+      });
+   }
 
-//             user['login'] = this.OldUserLogin;
-//             user['password'] = this.OldUserPassword;
-//             user['userName'] = this.OldUserUserName;
-//             user['idUserRole'] = this.OldUserIdRoleUser;
+   updateUser(input: HTMLInputElement) {
 
-//             this.ELEMENT_DATA.splice(this.index,1);
-//             this.ELEMENT_DATA.splice(0, 0, user as any);
-//             this.myDataSource.data = this.ELEMENT_DATA;
-//             this.resetForm();
+      if ((input.value['login'] != this.OldUserLogin) || (input.value['userName'] != this.OldUserUserName) ||
+      (input.value['password'] != this.OldUserPassword) || (input.value['idRoleUser'] != this.OldUserIdRoleUser)) {
+      
+         let theLogin = input.value['login'];
+         let thePassword = input.value['password'];
+         let theUserName = input.value['userName'];
+         let theIdRoleUser = input.value['idRoleUser'];
+         
+         let theOldLogin = "\"" + this.OldUserLogin +"\"";
+         let user = [{ login: theLogin, password: thePassword, userName: theUserName, idRoleUser: theIdRoleUser }];
 
-//             //this.sharedSnackBarMessage.changeMessage("Utilisateur mis à jour avec succes !");
-//             //this.snackBarService.openSuccessSnackBar(SnackbarMessageComponent);
-//           },
-//           (error: AppError) => {
-//             //this.posts.splice(0, 1);
-//             //this.sharedSnackBarMessage.changeMessage("Cet utilisateur a été supprimé. Il ne peut pas être mis à jour.");
-//             //this.snackBarService.openDangerSnackBar(SnackbarMessageComponent);
-//           });
-//       } else {
-//         //throw error
-//         //this.sharedSnackBarMessage.changeMessage("Le nom de l'utilisateur existant est identique à la proposition de changement");
-//         //this.snackBarService.openWarningSnackBar(SnackbarMessageComponent);
-//       }
-//   }
+         this.service.update(user, theOldLogin)
+         .subscribe(response => {
+            user['login'] = theLogin;
+            user['password'] = thePassword;
+            user['userName'] = theUserName;
+            user['idRoleUser'] = theIdRoleUser;
+
+            this.ELEMENT_DATA.splice(this.index,1);
+            this.ELEMENT_DATA.splice(0, 0, user as any);
+            this.myDataSource.data = this.ELEMENT_DATA;
+            this.resetForm();
+
+            this.showToasterSuccess("Utilisateur mis à jour", "Users");
+         },
+         (error: AppError) => {
+            this.showToasterError("Cet utilisateur a été supprimé. Il ne peut pas être mis à jour","Users")
+         });
+      } else {
+         this.showToasterInfo("Aucun changement détecté","Users")
+      }
+   }
 
    retrieveUserData(input: any){
-//     this.resetForm();
-//     this.UserLogin = input.UserLogin;
-//     this.UserUserName = input.UserUserName;
-//     this.UserPassword = input.UserPassword;
-//     this.OldUserLogin = input.UserOldLogin;
-//     this.OldUserUserName = input.UserOldUserName;
-//     this.OldUserPassword = input.UserOldPassword;
-//     this.OldUserIdRoleUser = input.UserOldIdUserRole;
+      this.resetForm();
 
-//     this.button = "btn btn-info";
-//     this.buttonText = "Editer";
-//     this.method = "createUser";
+      this.UserLogin = input.login;
+      this.UserUserName = input.userName;
+      this.UserPassword = input.password;
+      this.UserIdRoleUser = input.idRoleUser;
+      this.OldUserLogin = input.login;
+      this.OldUserUserName = input.userName;
+      this.OldUserPassword = input.password;
+      this.OldUserIdRoleUser = input.idRoleUser;
 
-//     this.index = this.getIndex(input);
+      this.button = "btn btn-info";
+      this.buttonText = "Editer";
+      this.method = "updateUser";
+
+      this.index = this.getIndex(input);
    }  
   
    resetForm() {
-//     this.UserLogin = "";
-//     this.UserUserName = "";
-//     this.UserPassword = "";
-//     this.OldUserLogin = "";
-//     this.OldUserUserName = "";
-//     this.OldUserPassword = "";
-//     this.OldUserIdRoleUser = "";
+      this.UserLogin = "";
+      this.UserUserName = "";
+      this.UserPassword = "";
+      this.OldUserLogin = "";
+      this.OldUserUserName = "";
+      this.OldUserPassword = "";
+      this.OldUserIdRoleUser = "";
 
-//     this.button = "btn btn-danger";
-//     this.buttonText = "Ajouter";
-//     this.method = "createUser";
+      this.button = "btn btn-danger";
+      this.buttonText = "Ajouter";
+      this.method = "createUser";
    }
 
    showToasterSuccess(title, message) {
       this.notifyService.showSuccess(title, message)
    }
 
+   showToasterError(title, message) {
+      this.notifyService.showError(title, message)
+   }
+
+   showToasterInfo(title, message) {
+      this.notifyService.showInfo(title, message)
+   }
 }

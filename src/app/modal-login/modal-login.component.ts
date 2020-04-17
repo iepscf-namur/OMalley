@@ -88,7 +88,8 @@ export class ModalLoginComponent implements OnInit {
 
   getCredentials(titleInput: HTMLInputElement){
 
-    let credentials = [{ login: this.login, password: this.password}]
+    let credentials = [{ login: this.login, password: this.password}];
+
     this.service.checkCredentials(credentials);
     if (this.cookieService.get('loggedIn')) {
       this.changeButton();
