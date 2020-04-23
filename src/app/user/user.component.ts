@@ -1,14 +1,18 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { FormControl } from '@angular/forms';
 
 import { NotFoundError } from './../common/not-found-error';
 import { BadRequest } from './../common/bad-request-error';
 import { AppError } from './../common/validators/app-error';
 import { UserServiceComponent } from './../services/user-service/user-service.component';
+import { TypeRoleService } from './../services/type-role/type-role.service';
 
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { NotificationService } from '../services/notification/notification.service';
+import { element } from 'protractor';
 
 // Naming from the html (matColumnDef=)
 export interface UserElement {
@@ -16,6 +20,13 @@ export interface UserElement {
    userName: string;
    password: string;
    idRoleUser: number;
+}
+
+// Naming from the html
+export interface TypeRoleElement {
+   id: number;
+   name: string;
+   description: string;
 }
 
 @Component({
@@ -27,8 +38,17 @@ export class UserComponent implements OnInit {
 
    constructor(
      private service: UserServiceComponent,
-     private notifyService: NotificationService
+     private notifyService: NotificationService,
+     private typeRoleService: TypeRoleService
    ) { }
+
+   //Used to get Tab Index
+   selected = new FormControl(0);
+
+   // Dropdown
+   dropdownRolesList = [];
+   selectedRolesItems = [];
+   dropdownRolesSettings:IDropdownSettings = {};
 
    // MatPaginator Inputs
    length = 1000;
@@ -42,8 +62,18 @@ export class UserComponent implements OnInit {
    columnsToDisplay = ['login', 'userName', 'idRoleUser', 'actions'];
    myDataSource = new MatTableDataSource(this.ELEMENT_DATA);
 
+   TYPEROLE_DATA: TypeRoleElement[];
+   columnsToDisplayTypeRole = ['id','name','description'];
+   myDataSourceTypeRole = new MatTableDataSource(this.TYPEROLE_DATA);
+
+   TYPEROLE_DATA_ONE: TypeRoleElement[];
+   columnsToDisplayTypeRoleOne = ['id','name','description'];
+   myDataSourceTypeRoleOne = new MatTableDataSource(this.TYPEROLE_DATA_ONE);
+
    @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-   @ViewChild(MatSort, {static: true}) sort: MatSort;
+   @ViewChild(MatPaginator, {static: true}) paginator2: MatPaginator;
+
+   @ViewChild(MatSort, {static: true}) sort: MatSort ;
    
    applyFilter(filterValue: string) {
       this.myDataSource.filter = filterValue.trim().toLowerCase();
@@ -52,7 +82,7 @@ export class UserComponent implements OnInit {
          this.myDataSource.paginator.firstPage();
       }
    }
-
+         
 //   users: any[];
    UserLogin: string = '';
    UserUserName: string = '';
@@ -62,6 +92,13 @@ export class UserComponent implements OnInit {
    OldUserUserName: string = '';
    OldUserPassword: string = '';
    OldUserIdRoleUser: string = '';
+
+   id: string = '';
+   name: string = '';
+   description: string = '';
+   oldRoleId: string = '';
+   oldRoleName: string = '';
+   oldRoleDescription: string = '';
 
    button = "btn btn-danger";
    buttonText = "Ajouter";
@@ -77,17 +114,40 @@ export class UserComponent implements OnInit {
       .subscribe(response =>  {
          this.ELEMENT_DATA = response as UserElement[];
          this.myDataSource.data = this.ELEMENT_DATA;
+      })
+
+      this.dropdownRolesSettings = {
+         singleSelection: true,
+         idField: 'id',
+         textField: 'name',
+         selectAllText: 'Select All',
+         unSelectAllText: 'UnSelect All',
+         itemsShowLimit: 3,
+         allowSearchFilter: false
+      };
+
+      // Populate dropbox for Role
+      this.typeRoleService.getAll()
+      .subscribe(response => {
+         this.TYPEROLE_DATA = response as any;
+         this.myDataSourceTypeRole.data = this.TYPEROLE_DATA;
+
+         let dropdown = [];
+         this.myDataSourceTypeRole.data.forEach(element => {
+            dropdown.push({id: element.id, name: element.name, description: element.description});
+         })
+         this.dropdownRolesList = dropdown;
       });
+   
    }
 
-//   onItemSelect(item: any) {
-//      this.showToasterError("item selected","onitemselect");
-//     console.log(item);
-//   }
+   onItemSelect(item: any) {
+   
+   }
 
-//   onSelectAll(items: any) {
-//     console.log(items);
-//   }
+   onSelectAll(items: any) {
+
+   }
 
    methodSwitch(form){
       if (this.method == "createUser"){
@@ -104,14 +164,16 @@ export class UserComponent implements OnInit {
 
    createUser(input: HTMLInputElement){
       if ((input.value['login'] == "") || (input.value['password'] == "")) {
-         this.showToasterError("Le nom ou le mot de passe ne peuvent être vides.", "Users")
+         this.showToasterError("Le nom ou le mot de passe ne peuvent être vides", "Users")
       } else {
          // Create the array to pass. e.g. :
          // [{"login": "titi@hotmail.be","password": "mytiti123","userName": "titi","idRoleUser": 0}]
          let theLogin = input.value['login'];
          let thePassword = input.value['password'];
          let theUserName = input.value['userName'];
-         let theIdRoleUser = input.value['idRoleUser'];
+
+         let theRole = this.selectedRolesItems[0];
+         let theIdRoleUser = theRole.id;
          let user = [{ login: theLogin, password: thePassword, userName: theUserName, idRoleUser: theIdRoleUser }];
 
          this.service.create(user)
@@ -163,7 +225,8 @@ export class UserComponent implements OnInit {
          let theLogin = input.value['login'];
          let thePassword = input.value['password'];
          let theUserName = input.value['userName'];
-         let theIdRoleUser = input.value['idRoleUser'];
+         let theRole = this.selectedRolesItems[0];
+         let theIdRoleUser = theRole.id;
          
          let theOldLogin = "\"" + this.OldUserLogin +"\"";
          let user = [{ login: theLogin, password: thePassword, userName: theUserName, idRoleUser: theIdRoleUser }];
@@ -202,12 +265,25 @@ export class UserComponent implements OnInit {
       this.OldUserPassword = input.password;
       this.OldUserIdRoleUser = input.idRoleUser;
 
+      let myRole = this.findOneRole(input.idRoleUser);
+      this.selectedRolesItems.push({name: myRole});
+
       this.button = "btn btn-info";
       this.buttonText = "Editer";
       this.method = "updateUser";
 
       this.index = this.getIndex(input);
-   }  
+   }
+   
+   findOneRole(myId: number): string {
+      let myName = "";
+      this.myDataSourceTypeRole.data.forEach(element => {
+         if (element.id == myId) {
+            myName = element.name;
+         }
+      })
+      return myName;
+   }
   
    resetForm() {
       this.UserLogin = "";
@@ -217,6 +293,8 @@ export class UserComponent implements OnInit {
       this.OldUserUserName = "";
       this.OldUserPassword = "";
       this.OldUserIdRoleUser = "";
+
+      this.selectedRolesItems = [];
 
       this.button = "btn btn-danger";
       this.buttonText = "Ajouter";
@@ -234,4 +312,5 @@ export class UserComponent implements OnInit {
    showToasterInfo(title, message) {
       this.notifyService.showInfo(title, message)
    }
+
 }

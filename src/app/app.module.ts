@@ -10,6 +10,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { ToastrModule } from 'ngx-toastr';
 import { HttpClientModule } from '@angular/common/http'
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 //import { MatFormFieldModule } from '@angular/material/form-field';
 //import { MatTableDataSource   Module ???????} from '@angular/material/table';
@@ -48,12 +49,14 @@ import { ModalLoginComponent } from './modal-login/modal-login.component';
     MatPaginatorModule,
     MatSortModule,
     NgbModule,
+    NgMultiSelectDropDownModule.forRoot(),
     ToastrModule.forRoot(),
     HttpClientModule,
   ],
   providers: [
   //  CatalogServiceComponent
   //  UserServiceComponent
+  //  LoginServiceComponent
   ],
   bootstrap: [AppComponent]
 })

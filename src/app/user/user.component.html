@@ -19,7 +19,15 @@
                 </div>
                 <div class="col">
                     <label class="control-label">Role</label>
-                    <input type="text" [(ngModel)]="UserIdRoleUser" name="idRoleUser" id="UserIdRoleUser" placeholder="Enter role" class="form-control">
+                    <ng-multiselect-dropdown
+                        [placeholder]="'choose role'"
+                        [data]="dropdownRolesList"
+                        [(ngModel)]="selectedRolesItems"
+                        [settings]="dropdownRolesSettings"
+                        (onSelect)="onItemSelect($event)"
+                        (onSelectAll)="onSelectAll($event)"
+                        [ngModelOptions]="{standalone: true}">
+                    </ng-multiselect-dropdown>
                 </div>
             </div>
             <div class="form-row">
@@ -49,7 +57,7 @@
                             <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
                         </ng-container>
                         <ng-container matColumnDef="idRoleUser">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Id Role </th>
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Role </th>
                             <td mat-cell *matCellDef="let element"> {{element.idRoleUser}} </td>
                         </ng-container>
 
