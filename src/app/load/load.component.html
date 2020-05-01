@@ -1,0 +1,31 @@
+<div class="container" style="padding: bottom 10px;padding-top: 100px">
+    <h2>Load song</h2>
+    <form [formGroup]="myForm">
+        <div class="form-row" style="padding-bottom: 0px;padding-top: 10px">
+            <div class="col">
+                <label class="control-label">Artist Name</label>
+                <input type="text" formControlName="ArtistName" name="artistName" id="ArtistName" 
+                    placeholder="Enter artist name" class="form-control">
+            </div>
+            <div class="col">
+                <label class="control-label">Song Title</label>
+                <input type="text" formControlName="SongTitle" name="songTitle" id="SongTitle" 
+                    placeholder="Enter song title" class="form-control">
+            </div>
+        </div>
+        <div class="form-row" style="padding-bottom: 0px;padding-top: 10px">
+            <div class="col">
+                <label class="control-label">File</label>
+            </div>
+        </div>
+        <div class="form-row" style="padding-bottom: 0px;padding-top: 0px">
+            <div class="col">
+                <input type="file" (change)="onChange($event.target.files)">
+            </div>
+        </div>
+
+        <div class="form-row" style="padding-bottom: 0px;padding-top: 10px">
+            <pre> {{fileContent}} </pre>
+        </div>
+    </form>
+</div>

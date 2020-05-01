@@ -11,21 +11,18 @@ import { MatSortModule } from '@angular/material/sort';
 import { ToastrModule } from 'ngx-toastr';
 import { HttpClientModule } from '@angular/common/http'
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-
-//import { MatFormFieldModule } from '@angular/material/form-field';
-//import { MatTableDataSource   Module ???????} from '@angular/material/table';
-
+import { ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ParallaxImageComponent } from './parallax-image/parallax-image.component';
 import { HomeComponent } from './home/home.component';
 import { FooterComponent } from './footer/footer.component';
 import { NavbarComponent } from './navbar/navbar.component';
-//import { CatalogServiceComponent } from './services/catalog-service/catalog-service.component';
-import { CatalogComponent } from './catalog/catalog.component';
-//import { UserServiceComponent } from './services/user-service/user-service.component';
-import { UserComponent } from './user/user.component';
 import { ModalLoginComponent } from './modal-login/modal-login.component';
+import { CatalogComponent } from './catalog/catalog.component';
+import { UserComponent } from './user/user.component';
+import { LoadComponent } from './load/load.component';
+import { PlayComponent } from './play/play.component';
 
 @NgModule({
   declarations: [
@@ -34,9 +31,11 @@ import { ModalLoginComponent } from './modal-login/modal-login.component';
     HomeComponent,
     FooterComponent,
     NavbarComponent,
+    ModalLoginComponent,
     CatalogComponent,
     UserComponent,
-    ModalLoginComponent,
+    LoadComponent,
+    PlayComponent,
   ],
   imports: [
     BrowserModule,
@@ -49,6 +48,7 @@ import { ModalLoginComponent } from './modal-login/modal-login.component';
     MatPaginatorModule,
     MatSortModule,
     NgbModule,
+    ReactiveFormsModule,
     NgMultiSelectDropDownModule.forRoot(),
     ToastrModule.forRoot(),
     HttpClientModule,

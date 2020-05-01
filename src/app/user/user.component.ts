@@ -180,8 +180,8 @@ export class UserComponent implements OnInit {
          .subscribe(
             response => {
                user['login'] = theLogin;
-               user['userName'] = thePassword;
-               user['password'] = theUserName;
+               user['userName'] = theUserName;
+               user['password'] = thePassword;
                user['idRoleUser'] = theIdRoleUser;
         
                this.ELEMENT_DATA.splice(0, 0, user as any);

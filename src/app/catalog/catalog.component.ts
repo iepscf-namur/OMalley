@@ -4,6 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { NotificationService } from '../services/notification/notification.service';
+import { Routes, RouterModule, Router } from "@angular/router";
 
 export interface CatalogElement {
   idSong: number;
@@ -20,7 +21,8 @@ export class CatalogComponent implements OnInit {
 
   constructor(
      private service: CatalogServiceComponent,
-     private notifyService: NotificationService
+     private notifyService: NotificationService,
+     private router: Router
   ) { }
 
   // MatPaginator Inputs
@@ -32,7 +34,7 @@ export class CatalogComponent implements OnInit {
   pageEvent: PageEvent;
 
   ELEMENT_DATA: CatalogElement[];
-  columnsToDisplay = ['idSong', 'artistName', 'songTitle'];
+  columnsToDisplay = ['idSong', 'artistName', 'songTitle', 'play'];
   myDataSource = new MatTableDataSource(this.ELEMENT_DATA);
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -47,14 +49,13 @@ export class CatalogComponent implements OnInit {
       //this.userConnected = response.login as any;
       this.ELEMENT_DATA = response as CatalogElement[];
       this.myDataSource.data = this.ELEMENT_DATA;
-      // this.showToasterSuccess("Data loaded successfully", "Catalog")
     });
 
   }
 
-  // onItemSelect(item: any) {
-  //    console.log(item);
-  // }
+  //onItemSelect(item: any) {
+  //  console.log(item);
+  //}
 
   // onSelectAll(items: any) {
   //   console.log(items);
@@ -64,8 +65,14 @@ export class CatalogComponent implements OnInit {
    
   // }
 
+  retrieveSongData(song) {
+    // pass the parameter idCatalogSong
+    let idCatalogSong = song.idSong;
+    this.router.navigate(['play'], { state: { idCatalogSong: idCatalogSong } });
+  }
+  
   showToasterSuccess(title, message) {
     this.notifyService.showSuccess(title, message)
   }
-  
+
 }

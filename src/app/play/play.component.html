@@ -1,0 +1,26 @@
+<style type="text/css">
+    .Courier14
+    {
+        font-family:"Courier New", Courier, monospace;
+        font-size: 14px;
+    }
+</style>
+
+<div class="container" style="padding: bottom 10px;padding-top: 100px">
+    <form #form="ngForm" class="form-horizontal" id="form_data">
+        <div>
+            <div class="form-row" style="padding-bottom:0px;padding-top: 10px">
+                <h3>{{ ArtistName }} - {{ SongTitle }}</h3>
+            </div>
+        </div>
+        <!--
+        <div class="my-song" #scrollMe [scrollTop]="scrollMe.scrollHeight">
+            {{ Song }}
+        </div>
+        -->
+        <div class="form-group">
+            <!-- <textarea class="form-control" id="mySong" rows="3"></textarea> -->
+            <textarea class="Courier14" id="mySong" cols="50" rows="22"> {{ mySong }} </textarea>
+        </div>
+    </form>
+</div>
