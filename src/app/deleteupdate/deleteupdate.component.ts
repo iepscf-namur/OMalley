@@ -1,4 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -24,10 +26,16 @@ export interface CatalogElement {
 })
 export class DeleteupdateComponent implements OnInit {
 
+  myForm = new FormGroup({
+    name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    file: new FormControl('', [Validators.required]),
+    fileSource: new FormControl('', [Validators.required])
+  });
+  
   constructor(
     private catalogService: CatalogServiceComponent,
     private songService: SongServiceService,
-    private notifyService: NotificationService,
+    private notifyService: NotificationService
   ) { }
 
   // MatPaginator Inputs
@@ -45,12 +53,13 @@ export class DeleteupdateComponent implements OnInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  IdSong: number;
-  ArtistName: string;
-  SongTitle: string;
-  OldIdSong: number = 0;
-  OldArtistName: string = '';
-  OldSongTitle: string = '';
+  SongIdSong: number;
+  SongArtistName: string;
+  SongSongTitle: string;
+  SongOldIdSong: number = 0;
+  SongOldArtistName: string = '';
+  SongOldSongTitle: string = '';
+  theSong: string = '';
 
   index = null;
 
@@ -84,8 +93,7 @@ export class DeleteupdateComponent implements OnInit {
     return index;
   }
 
-
-  deleteCatalog(song) {
+  deleteSong(song) {
     this.songService.delete("\"" + song.songTitle + "\"")
     .subscribe(response => {
        //On va maintenant delete le secteur dans notre array
@@ -100,27 +108,101 @@ export class DeleteupdateComponent implements OnInit {
        else throw error;
     });
   }
-  
-  retrieveCatalogData(input: any) {
+
+  prepapreSongData() {
+    
+    var file = (<HTMLInputElement>document.getElementById("myFile")).files[0];
+    var fileName = (<HTMLInputElement>document.getElementById("myFile")).files[0].name;
+
+    if (!this.checkFileExt(fileName)) {
+      this.showToasterError("Le fichier doit être un fichier texte", "Songs")
+    } else {
+      if (!file) {
+        this.showToasterError("Le fichier est soit manquant soit corrompu", "Songs")
+      } else {
+
+        var reader = new FileReader();
+        reader.onloadend = () => {
+          this.theSong = reader.result.toString(),
+          this.updateSong();
+        };
+        reader.readAsText(file);
+      }
+    }
+  }
+
+  checkFields(): boolean {
+    let valid: boolean = true;
+    if ((this.SongArtistName == "") || (this.SongSongTitle == "")) {
+      valid = false;
+    }
+    return valid;
+  }
+
+  checkFileExt(name: string): boolean {
+    let ok = false;
+    var str = name;
+    var s = str.indexOf('.');
+    if (s != -1) {
+      var l = str.length;
+      var ext = str.substr(s+1, l-s);
+      if (ext == "txt") ok = true;
+    }
+    return ok;
+  }
+
+  updateSong() {
+    if (!this.checkFields()) {
+      this.showToasterError("L'artiste ou le titre ne peuvent être vides", "Songs")
+    } else {
+      // Now call the Web Service to load the song
+      let song = [{ artistName: this.SongArtistName, songTitle: this.SongSongTitle, song: this.theSong }];
+      let theOldSongTitle = "\"" + this.SongOldSongTitle + "\"";
+      this.songService.update(song, theOldSongTitle)
+      .subscribe(
+        response => {
+          song['idSong'] = this.SongIdSong;
+          song['artistName'] = this.SongArtistName;
+          song['songTitle'] = this.SongSongTitle;
+
+          this.ELEMENT_DATA.splice(this.index,1);
+          this.ELEMENT_DATA.splice(0, 0, song as any);
+          this.myDataSource.data = this.ELEMENT_DATA;
+          this.resetForm();
+
+          this.showToasterSuccess("Chanson mise à jour", "Song");
+        },
+        (error: AppError) => {
+          if (error instanceof BadRequest) {
+              this.showToasterError("Cette chanson existe deja", "Songs");
+          } else {
+              throw error;
+          }
+        }
+      )
+    }
+  }
+
+  retrieveSongData(input: any) {
     this.resetForm();
 
-    this.IdSong = input.idSong;
-    this.ArtistName = input.artistName;
-    this.SongTitle = input.songTitle;
-    this.OldIdSong = input.idSong;
-    this.OldArtistName = input.artistName;
-    this.OldSongTitle = input.songTitle;
+    this.SongIdSong = input.idSong;
+    this.SongArtistName = input.artistName;
+    this.SongSongTitle = input.songTitle;
+    this.SongOldIdSong = input.idSong;
+    this.SongOldArtistName = input.artistName;
+    this.SongOldSongTitle = input.songTitle;
 
     this.index = this.getIndex(input);
   }
   
   resetForm() {
-    this.IdSong = 0;
-    this.ArtistName = '';
-    this.SongTitle = '';
-    this.OldIdSong = 0;
-    this.OldArtistName = '';
-    this.OldSongTitle = '';
+    this.SongIdSong = 0;
+    this.SongArtistName = '';
+    this.SongSongTitle = '';
+    this.SongOldIdSong = 0;
+    this.SongOldArtistName = '';
+    this.SongOldSongTitle = '';
   }
 
   showToasterSuccess(title, message) {

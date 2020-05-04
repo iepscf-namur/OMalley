@@ -12,7 +12,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { NotificationService } from '../services/notification/notification.service';
-import { element } from 'protractor';
 
 // Naming from the html (matColumnDef=)
 export interface UserElement {
@@ -219,7 +218,7 @@ export class UserComponent implements OnInit {
 
    updateUser(input: HTMLInputElement) {
 
-      if ((input.value['login'] != this.OldUserLogin) || (input.value['userName'] != this.OldUserUserName) ||
+      if ((input.value['theArtistName'] != this.OldUserLogin) || (input.value['userName'] != this.OldUserUserName) ||
       (input.value['password'] != this.OldUserPassword) || (input.value['idRoleUser'] != this.OldUserIdRoleUser)) {
       
          let theLogin = input.value['login'];

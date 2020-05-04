@@ -1,39 +1,63 @@
-<div class="container" style="padding: bottom 10px;padding-top: 100px">
+<div class="container" style="padding-bottom:10px;padding-top: 100px">
     <h2>Catalog list (Delete/Update)</h2>
-    <table mat-table [dataSource]="myDataSource" matSort style="background-color:  #e8eef2">
-        <ng-container matColumnDef="idSong">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Id </th>
-            <td mat-cell *matCellDef="let element"> {{element.idSong}} </td>
-        </ng-container>
-        <ng-container matColumnDef="artistName">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Artist </th>
-            <td mat-cell *matCellDef="let element"> {{element.artistName}} </td>
-        </ng-container>
-        <ng-container matColumnDef="songTitle">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
-            <td mat-cell *matCellDef="let element"> {{element.songTitle}} </td>
-        </ng-container>
+    <form #form="ngForm" class="form-horizontal" id="form_data">
+        <div>
+            <div class="form-row" style="padding-bottom: 0px;padding-top: 10px">
+                <div class="col">
+                    <label class="control-label">Artist Name</label>
+                    <input type="text" [(ngModel)]="SongArtistName" name="theArtistName" id="SongArtistName" class="form-control">
+                </div>
+                <div class="col">
+                    <label class="control-label">Song Title</label>
+                    <input type="text" [(ngModel)]="SongSongTitle" name="theSongTitle" id="SongSongTitle" class="form-control">
+                </div>
+            </div>
+            <div class="form-group col-md-6" style="padding-bottom:0px;padding-top: 15px">
+                <div class="col">
+                    <!-- <input type="file" (change)="onChange($event.target.files)"> -->
+                    <input type="file" id="myFile">
+                    <button style="margin:5px;" type="button" class="btn btn-danger" (click)="prepapreSongData()">Update</button>
+                </div>
+            </div>
+        </div>
 
-        <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Actions </th>
-            <td mat-cell *matCellDef="let song">
-                <button mat-flat-button [matMenuTriggerFor]="menu" >Actions</button>
-                <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="retrieveCatalogData(song)">Mettre-à-jour</button>
-                    <button mat-menu-item (click)="deleteCatalog(song)">Supprimer</button>
-                </mat-menu>
-            </td>
-        </ng-container>
+        <div class="container" style="padding-bottom:10px;padding-top: 10px">
+            <table mat-table [dataSource]="myDataSource" matSort style="background-color:  #e8eef2">
+                <ng-container matColumnDef="idSong">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Id </th>
+                    <td mat-cell *matCellDef="let element"> {{element.idSong}} </td>
+                </ng-container>
+                <ng-container matColumnDef="artistName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Artist </th>
+                    <td mat-cell *matCellDef="let element"> {{element.artistName}} </td>
+                </ng-container>
+                <ng-container matColumnDef="songTitle">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
+                    <td mat-cell *matCellDef="let element"> {{element.songTitle}} </td>
+                </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-        <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
-    </table>
-                        
-    <mat-paginator  [length]="length"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="pageSizeOptions"
-        showFirstLastButtons
-        style ="background-color: #e8eef2"
-        (page)="pageEvent = $event">
-    </mat-paginator>
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Actions </th>
+                    <td mat-cell *matCellDef="let song">
+                        <button mat-flat-button [matMenuTriggerFor]="menu" >Actions</button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="retrieveSongData(song)">Mettre-à-jour</button>
+                            <button mat-menu-item (click)="deleteSong(song)">Supprimer</button>
+                        </mat-menu>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+                <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
+            </table>
+                                
+            <mat-paginator  [length]="length"
+                [pageSize]="pageSize"
+                [pageSizeOptions]="pageSizeOptions"
+                showFirstLastButtons
+                style ="background-color: #e8eef2"
+                (page)="pageEvent = $event">
+            </mat-paginator>
+        </div>
+    </form>
 </div>
