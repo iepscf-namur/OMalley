@@ -6,7 +6,7 @@ import { NotificationService } from '../services/notification/notification.servi
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { Routes, RouterModule, Router } from "@angular/router";
+import { Router, ActivatedRoute, Params, Data } from '@angular/router';
 
 export interface SongElement {
   id: number;
@@ -24,27 +24,37 @@ export class PlayComponent implements OnInit {
   @ViewChild(ScrollToBottomDirective)
   scroll: ScrollToBottomDirective;
 
-  idCatalog: any;
+  idCatalogSong: any;
+  artistName: any;
+  songTitle: any;
 
   constructor(
-    private router: Router,
+    //private router: Router,
+    private route: ActivatedRoute,
     private songService: SongServiceService,
     private notifyService: NotificationService,
     )
   {
-    this.idCatalog = this.router.getCurrentNavigation().extras.state;
+    // get the parameters from the parent page
+    this.idCatalogSong = this.route.snapshot.paramMap.get('idCatalogSong');
+    this.artistName = this.route.snapshot.paramMap.get('artistName');
+    this.songTitle = this.route.snapshot.paramMap.get('songTitle');
   }
   
-  ArtistName: string = 'Jacques Brel';
-  SongTitle: string = 'Ne me quitte pas';
+  ArtistName: string = '';
+  SongTitle: string = '';
   mySong: string = '';
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   ngOnInit(): void {
+    // set the titles
+    this.ArtistName = this.artistName;
+    this.SongTitle = this.songTitle;
+
     // Search the right song; get the parameter from the previous page
-    let idCatalogSong = "\"" + this.idCatalog.idCatalogSong + "\"";
+    let idCatalogSong = "\"" + this.idCatalogSong + "\"";
 
     // Get the song
     this.songService.getOne(idCatalogSong)

@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CatalogServiceComponent } from '../services/catalog-service/catalog-service.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { Router, ActivatedRoute, Params, Data } from '@angular/router';
+import { CatalogServiceComponent } from '../services/catalog-service/catalog-service.component';
 import { NotificationService } from '../services/notification/notification.service';
-import { Routes, RouterModule, Router } from "@angular/router";
 
 export interface CatalogElement {
   idSong: number;
@@ -66,9 +66,11 @@ export class CatalogComponent implements OnInit {
   // }
 
   retrieveSongData(song) {
-    // pass the parameter idCatalogSong
-    let idCatalogSong = song.idSong;
-    this.router.navigate(['play'], { state: { idCatalogSong: idCatalogSong } });
+    // pass the parameter to the child page
+    let theIdCatalogSong = song.idSong;
+    let theArtistName = song.artistName; 
+    let theSongTitle = song.songTitle;
+    this.router.navigate(['/play', { idCatalogSong: theIdCatalogSong, artistName: theArtistName, songTitle: theSongTitle }]);
   }
   
   showToasterSuccess(title, message) {

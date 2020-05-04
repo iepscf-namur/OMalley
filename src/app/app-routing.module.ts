@@ -1,3 +1,4 @@
+import { DeleteupdateComponent } from './deleteupdate/deleteupdate.component';
 import { PlayComponent } from './play/play.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -11,8 +12,8 @@ const routes: Routes = [
   { path: 'catalog', component: CatalogComponent },
   { path: 'load', component: LoadComponent },
   { path: 'users', component: UserComponent },
-  // to be removed later on
-  { path: 'play', component: PlayComponent }
+  { path: 'play', component: PlayComponent },
+  { path: 'delupd', component: DeleteupdateComponent }
 ];
 
 @NgModule({

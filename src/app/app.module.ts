@@ -23,6 +23,7 @@ import { CatalogComponent } from './catalog/catalog.component';
 import { UserComponent } from './user/user.component';
 import { LoadComponent } from './load/load.component';
 import { PlayComponent } from './play/play.component';
+import { DeleteupdateComponent } from './deleteupdate/deleteupdate.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { PlayComponent } from './play/play.component';
     UserComponent,
     LoadComponent,
     PlayComponent,
+    DeleteupdateComponent,
   ],
   imports: [
     BrowserModule,

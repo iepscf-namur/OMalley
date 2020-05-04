@@ -13,19 +13,12 @@
                     placeholder="Enter song title" class="form-control">
             </div>
         </div>
-        <div class="form-row" style="padding-bottom: 0px;padding-top: 10px">
+        <div class="form-group col-md-6" style="padding-bottom:0px;padding-top: 15px">
             <div class="col">
-                <label class="control-label">File</label>
+                <!-- <input type="file" (change)="onChange($event.target.files)"> -->
+                <input type="file" id="myFile">
+                <button style="margin:5px;" type="button" class="btn btn-danger" (click)="load()">Load</button>
             </div>
-        </div>
-        <div class="form-row" style="padding-bottom: 0px;padding-top: 0px">
-            <div class="col">
-                <input type="file" (change)="onChange($event.target.files)">
-            </div>
-        </div>
-
-        <div class="form-row" style="padding-bottom: 0px;padding-top: 10px">
-            <pre> {{fileContent}} </pre>
         </div>
     </form>
 </div>

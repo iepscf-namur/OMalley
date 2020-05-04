@@ -1,6 +1,7 @@
-import { Component, OnInit, Injectable } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormControl, Validators, FormBuilder} from '@angular/forms';
+
 import { NotFoundError } from './../common/not-found-error';
 import { BadRequest } from './../common/bad-request-error';
 import { AppError } from './../common/validators/app-error';
@@ -37,37 +38,68 @@ export class LoadComponent implements OnInit {
 
   CATALOG_DATA: CatalogElement[];
 
-  fileContent: string = '';
   ArtistName: string = '';
   SongTitle: string = '';
+  theSong: string = '';
 
   ngOnInit(): void {
     this.myForm = this.formBuilder.group({
       ArtistName: '',
       SongTitle: '',
     });
-
   }
 
   get f(){
     return this.myForm.controls;
   }
 
-  public onChange(fileList: FileList): void {
+  load() {
 
+    // load artist name and song tilte
     this.ArtistName = this.myForm.get('ArtistName').value;
     this.SongTitle = this.myForm.get('SongTitle').value;
+
+    var file = (<HTMLInputElement>document.getElementById("myFile")).files[0];
+    var fileName = (<HTMLInputElement>document.getElementById("myFile")).files[0].name;
+    console.log("var fileName: ", fileName);
+
+    if (!this.checkFileExt(fileName)) {
+      this.showToasterError("Le fichier doit être un fichier texte", "Songs")
+    } else {
+      if (!file) {
+        this.showToasterError("Le fichier est soit manquant soit corrompu", "Songs")
+      } else {
+
+        var reader = new FileReader();
+        reader.onloadend = () => {
+          this.theSong = reader.result.toString(),
+          this.createSong();
+        };
+        reader.readAsText(file);
+      }
+    }
+  }
+
+  createSong() {
 
     if (!this.checkFields()) {
       this.showToasterError("L'artiste ou le titre ne peuvent être vides", "Songs")
     } else {
-
-      if (!this.checkFileExt(fileList[0].name)) {
-        this.showToasterError("Le fichier doit être un fichier texte", "Songs")
-      } else {
-        
-        this.loadFile(fileList);  
-      }
+      // Now call the Web Service to load the song
+      let song = [{ artistName: this.ArtistName, songTitle: this.SongTitle, song: this.theSong }];
+      this.songService.create(song)
+      .subscribe(
+        response => {
+            this.showToasterSuccess("Chanson ajoutée", "Song");
+        },
+        (error: AppError) => {
+          if (error instanceof BadRequest) {
+              this.showToasterError("Cette chanson existe deja", "Songs");
+          } else {
+              throw error;
+          }
+        }
+      )
     }
   }
 
@@ -89,33 +121,6 @@ export class LoadComponent implements OnInit {
       if (ext == "txt") ok = true;
     }
     return ok;
-  }
-
-  loadFile(fileList: FileList) {
-    let file = fileList[0];
-    let fileReader: FileReader = new FileReader();
-    let self = this;
-    fileReader.onloadend = function(x) {
-      // self.fileContent = fileReader.result.toString();
-    }
-    fileReader.readAsText(file, "UTF-8");
-    let theSong = fileReader.result.toString();
-
-    // Call the Web Service to load the song
-    let song = [{ artistName: this.ArtistName, songTitle: this.SongTitle, song: theSong }];
-    this.songService.create(song)
-    .subscribe(
-      response => {
-        this.showToasterSuccess("Chanson ajoutée", "Song");
-      },
-      (error: AppError) => {
-        if (error instanceof BadRequest) {
-          this.showToasterError("Cette chanson existe deja", "Songs");
-        } else {
-          throw error;
-        }
-      }
-    )
   }
 
   showToasterSuccess(title, message) {
