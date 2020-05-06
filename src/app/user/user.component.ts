@@ -12,13 +12,14 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { NotificationService } from '../services/notification/notification.service';
+import { ɵELEMENT_PROBE_PROVIDERS } from '@angular/platform-browser';
 
 // Naming from the html (matColumnDef=)
 export interface UserElement {
    login: string;
    userName: string;
    password: string;
-   idRoleUser: number;
+   idRoleUser: string;
 }
 
 // Naming from the html
@@ -106,14 +107,6 @@ export class UserComponent implements OnInit {
    index = null;
 
    ngOnInit(): void {
-      this.myDataSource.paginator = this.paginator;
-      this.myDataSource.sort = this.sort;
-
-      this.service.getAll()
-      .subscribe(response =>  {
-         this.ELEMENT_DATA = response as UserElement[];
-         this.myDataSource.data = this.ELEMENT_DATA;
-      })
 
       this.dropdownRolesSettings = {
          singleSelection: true,
@@ -137,7 +130,24 @@ export class UserComponent implements OnInit {
          })
          this.dropdownRolesList = dropdown;
       });
-   
+
+      this.myDataSource.paginator = this.paginator;
+      this.myDataSource.sort = this.sort;
+
+      this.service.getAll()
+      .subscribe(response =>  {
+         //this.ELEMENT_DATA = response as UserElement[];
+         var result = response as UserElement[];
+         var myList = [];
+         result.forEach(element => {
+            let role: string = '';
+            role = this.findOneRole(Number(element.idRoleUser));
+            myList.push({login: element.login, userName: element.userName, 
+               password: element.password, idRoleUser: role});
+            })
+         this.ELEMENT_DATA = myList;
+         this.myDataSource.data = this.ELEMENT_DATA;
+      })
    }
 
    onItemSelect(item: any) {
@@ -181,12 +191,15 @@ export class UserComponent implements OnInit {
                user['login'] = theLogin;
                user['userName'] = theUserName;
                user['password'] = thePassword;
-               user['idRoleUser'] = theIdRoleUser;
-        
+               let role: string = '';
+               role = this.findOneRole(Number(theIdRoleUser));
+               user['idRoleUser'] = role;
                this.ELEMENT_DATA.splice(0, 0, user as any);
                this.myDataSource.data = this.ELEMENT_DATA;
+
                this.resetForm();
                this.showToasterSuccess("Utilisateur ajouté", "Users");
+
             },
             (error: AppError) => {
                if (error instanceof BadRequest) {
@@ -206,6 +219,7 @@ export class UserComponent implements OnInit {
          //On va maintenant delete le secteur dans notre array
          this.ELEMENT_DATA.splice(this.getIndex(user),1);
          this.myDataSource.data = this.ELEMENT_DATA;
+
          this.showToasterSuccess("Utilisateur supprimé avec succès", "Users");
       }, (error : AppError) => {
          if (error instanceof NotFoundError){
@@ -218,7 +232,7 @@ export class UserComponent implements OnInit {
 
    updateUser(input: HTMLInputElement) {
 
-      if ((input.value['theArtistName'] != this.OldUserLogin) || (input.value['userName'] != this.OldUserUserName) ||
+      if ((input.value['login'] != this.OldUserLogin) || (input.value['userName'] != this.OldUserUserName) ||
       (input.value['password'] != this.OldUserPassword) || (input.value['idRoleUser'] != this.OldUserIdRoleUser)) {
       
          let theLogin = input.value['login'];
@@ -235,8 +249,9 @@ export class UserComponent implements OnInit {
             user['login'] = theLogin;
             user['password'] = thePassword;
             user['userName'] = theUserName;
-            user['idRoleUser'] = theIdRoleUser;
-
+            let role: string = '';
+            role = this.findOneRole(Number(theIdRoleUser));
+            user['idRoleUser'] = role;
             this.ELEMENT_DATA.splice(this.index,1);
             this.ELEMENT_DATA.splice(0, 0, user as any);
             this.myDataSource.data = this.ELEMENT_DATA;
@@ -264,17 +279,18 @@ export class UserComponent implements OnInit {
       this.OldUserPassword = input.password;
       this.OldUserIdRoleUser = input.idRoleUser;
 
-      let myRole = this.findOneRole(input.idRoleUser);
-      this.selectedRolesItems.push({name: myRole});
+      let myRole = input.idRoleUser;
+      this.selectedRolesItems.push({ name: myRole });
 
       this.button = "btn btn-info";
-      this.buttonText = "Editer";
+      this.buttonText = "Enregistrer";
       this.method = "updateUser";
 
       this.index = this.getIndex(input);
    }
    
    findOneRole(myId: number): string {
+
       let myName = "";
       this.myDataSourceTypeRole.data.forEach(element => {
          if (element.id == myId) {

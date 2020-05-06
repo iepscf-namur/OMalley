@@ -69,7 +69,6 @@ export class DeleteupdateComponent implements OnInit {
 
     this.catalogService.getAll()
     .subscribe(response =>  {
-      //this.userConnected = response.login as any;
       this.ELEMENT_DATA = response as CatalogElement[];
       this.myDataSource.data = this.ELEMENT_DATA;
     });
