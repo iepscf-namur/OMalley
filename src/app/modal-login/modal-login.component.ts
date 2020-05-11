@@ -143,12 +143,12 @@ export class ModalLoginComponent implements OnInit {
     return JSON.parse(this.cookieService.get('loggedIn') || this.loggedInStatus.toString());
   }
 
-  showToasterSuccess(title, message) {
-    this.notifyService.showSuccess(title, message)
+  showToasterSuccess(message, title) {
+    this.notifyService.showSuccess(message, title)
   }
 
-  showToasterError(title, message) {
-    this.notifyService.showError(title, message)
+  showToasterError(message, title) {
+    this.notifyService.showError(message, title)
   }
 
 }

@@ -73,8 +73,8 @@ export class CatalogComponent implements OnInit {
     this.router.navigate(['/play', { idCatalogSong: theIdCatalogSong, artistName: theArtistName, songTitle: theSongTitle }]);
   }
   
-  showToasterSuccess(title, message) {
-    this.notifyService.showSuccess(title, message)
+  showToasterSuccess(message, title) {
+    this.notifyService.showSuccess(message, title)
   }
 
 }

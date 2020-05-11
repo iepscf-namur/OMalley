@@ -1,18 +1,23 @@
-.my-song {
-    height: 500px;
-    overflow: auto;
+p {
+    font-family: Lato;
 }
 
-#mySong {
-    -moz-box-sizing:border-box;
-    -webkit-box-sizing:border-box;
-    box-sizing:border-box;
-    display:block;/*reset from inline*/
-    width:100%;
-    margin:0;/*remove defaults*/
-    padding:4px;
-    background:white;
-    border:0px solid;
-    overflow-y:auto;/*resets IE*/
-    overflow-x:hidden;/*resets IE*/
+.card {
+    border: none;
+    box-shadow: none;
+}
+.mat-card-content {
+    border: none;
+}
+
+.scrollContainer {
+    white-space: pre-wrap;
+    height: 450px;
+    overflow: auto;
+    position: relative;
+    border-style: none;
+}
+
+.mat-icon {
+    transform: scale(0.6);
 }

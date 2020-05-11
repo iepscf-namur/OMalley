@@ -1,26 +1,42 @@
-<style type="text/css">
-    .Courier14
-    {
-        font-family:"Courier New", Courier, monospace;
-        font-size: 14px;
-    }
-</style>
+<mat-card class="card">
+    <!--  <mat-card-title>Frank Sinatra - My Way </mat-card-title> <mat-card-subtitle>texte</mat-card-subtitle>-->
+    <mat-card-content class="mat-card-content">
+        <div fxLayout="column" style="padding: bottom 10px;padding-top: 100px">
+            <div fxLayout="row" style="height: 75px">
+                <div fxLayout="row" fxFlex="60" fxFlexFill style="background-color: white" fxLayoutAlign="space-around strech">
+                    <div fxFlex="70" style="background-color: white; margin-right: 50px" fxLayoutAlign="center center">
+                        <h4>{{ ArtistName }} - {{ SongTitle }}</h4>
+                    </div>
+                    <div fxFlex="400" fxLayoutAlign="center center">
+                        <button mat-raised-button color="primary" style="width: 8px; height: 35px; margin-right:3px;"
+                            (click)="startDefaultNamespaceScrolls()" id="startDefaultNamespaceScrollsButton"
+                            matTooltip="Start scroll animation"><mat-icon>play_arrow</mat-icon></button>
+                        <button mat-raised-button color="primary" style="width: 8px; height: 35px; margin-right:3px;"
+                            (click)="pageScrollService.stopAll('default')" id="stopDefaultNamespaceScrollsButton"
+                            matTooltip="Stop scroll animation"><mat-icon>stop</mat-icon></button>
+                        <button mat-raised-button color="primary" style="width: 8px; height: 35px; margin-right:15px;"
+                            (click)="resetDefaultNameScrolls()" id="resetDefaultNamespaceScrollsButton"
+                            matTooltip="Scroll container to top"><mat-icon>replay</mat-icon></button>
 
-<div class="container" style="padding: bottom 10px;padding-top: 100px">
-    <form #form="ngForm" class="form-horizontal" id="form_data">
-        <div>
-            <div class="form-row" style="padding-bottom:0px;padding-top: 10px">
-                <h3>{{ ArtistName }} - {{ SongTitle }}</h3>
+                        <button mat-raised-button color="primary" style="width: 8px; height: 35px; margin-right:3px;"
+                            (click)="myDuration = myDuration + 500"><mat-icon>remove</mat-icon></button>
+                        <button mat-raised-button color="primary" style="width: 8px; height: 35px; margin-right:15px;"
+                            (click)="myDuration = myDuration - 500"><mat-icon>add</mat-icon></button>
+
+                        <button mat-raised-button color="primary" style="width: 8px; height: 35px; margin-right:3px;"
+                            (click)="fontSize = fontSize - 1"><mat-icon>format_indent_decrease</mat-icon></button>
+                        <button mat-raised-button color="primary" style="width: 8px; height: 35px; margin-right:15px;"
+                            (click)="fontSize = fontSize + 1"><mat-icon>format_indent_increase</mat-icon></button>
+
+                        <button mat-raised-button color="primary" style="width: 8px; height: 35px; margin-right:0px;"
+                            (click)="save()" id="saveButton"><mat-icon>save</mat-icon></button>
+                    </div>
+                </div>
+            </div>
+            <div fxFlex fxLayout="column" fxLayout.gt-sm="row wrap" fxLayoutGap="5px" fxLayoutAlign.gt-sm="center"
+                [style]="{'font-size': fontSize + 'px', 'height': containerHeight + 'px', 'background-color': 'white'}">
+                <div #containerSong id="containerSong" class="scrollContainer"></div>
             </div>
         </div>
-        <!--
-        <div class="my-song" #scrollMe [scrollTop]="scrollMe.scrollHeight">
-            {{ Song }}
-        </div>
-        -->
-        <div class="form-group">
-            <!-- <textarea class="form-control" id="mySong" rows="3"></textarea> -->
-            <textarea class="Courier14" id="mySong" cols="50" rows="22"> {{ mySong }} </textarea>
-        </div>
-    </form>
-</div>
+    </mat-card-content>
+</mat-card>   

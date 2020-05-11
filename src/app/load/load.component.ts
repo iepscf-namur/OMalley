@@ -75,7 +75,7 @@ export class LoadComponent implements OnInit {
           this.theSong = reader.result.toString(),
           this.createSong();
         };
-        reader.readAsText(file);
+        reader.readAsText(file, 'UTF-8');
       }
     }
   }
@@ -123,16 +123,22 @@ export class LoadComponent implements OnInit {
     return ok;
   }
 
-  showToasterSuccess(title, message) {
-    this.notifyService.showSuccess(title, message)
+  resetForm() {
+    this.ArtistName = '';
+    this.SongTitle = '';
+    this.theSong = '';
   }
 
-  showToasterError(title, message) {
-    this.notifyService.showError(title, message)
+  showToasterSuccess(message, title) {
+    this.notifyService.showSuccess(message, title)
   }
 
-  showToasterInfo(title, message) {
-    this.notifyService.showInfo(title, message)
+  showToasterError(message, title) {
+    this.notifyService.showError(message, title)
+  }
+
+  showToasterInfo(message, title) {
+    this.notifyService.showInfo(message, title)
   }
 
 }

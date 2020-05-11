@@ -125,7 +125,7 @@ export class DeleteupdateComponent implements OnInit {
           this.theSong = reader.result.toString(),
           this.updateSong();
         };
-        reader.readAsText(file);
+        reader.readAsText(file, 'UTF-8');
       }
     }
   }
@@ -204,12 +204,12 @@ export class DeleteupdateComponent implements OnInit {
     this.SongOldSongTitle = '';
   }
 
-  showToasterSuccess(title, message) {
-    this.notifyService.showSuccess(title, message)
+  showToasterSuccess(message, title) {
+    this.notifyService.showSuccess(message, title)
   }
 
-  showToasterError(title, message) {
-    this.notifyService.showError(title, message)
+  showToasterError(message, title) {
+    this.notifyService.showError(message, title)
   }
 
 }

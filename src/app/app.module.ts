@@ -5,7 +5,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap' ;
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button'; 
+import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { ToastrModule } from 'ngx-toastr';
@@ -14,6 +16,10 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { NgxPageScrollModule } from 'ngx-page-scroll'
+import { NgxPageScrollCoreModule } from 'ngx-page-scroll-core';
+import { FlexLayoutModule } from '@angular/flex-layout';
+
 import { ParallaxImageComponent } from './parallax-image/parallax-image.component';
 import { HomeComponent } from './home/home.component';
 import { FooterComponent } from './footer/footer.component';
@@ -46,7 +52,9 @@ import { DeleteupdateComponent } from './deleteupdate/deleteupdate.component';
     FormsModule,
     MatTableModule,
     MatMenuModule,
+    MatCardModule,
     MatButtonModule,
+    MatIconModule,
     MatPaginatorModule,
     MatSortModule,
     NgbModule,
@@ -54,6 +62,9 @@ import { DeleteupdateComponent } from './deleteupdate/deleteupdate.component';
     NgMultiSelectDropDownModule.forRoot(),
     ToastrModule.forRoot(),
     HttpClientModule,
+    NgxPageScrollCoreModule.forRoot({_logLevel: 3}),
+    NgxPageScrollModule,
+    FlexLayoutModule
   ],
   providers: [
   //  CatalogServiceComponent

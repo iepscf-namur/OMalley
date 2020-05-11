@@ -89,8 +89,8 @@ export class LoginService extends DataServiceComponent {
     return jwtHelper.decodeToken(token);
   }
 
-  showToasterError(title, message) {
-    this.notifyService.showError(title, message)
+  showToasterError(message, title) {
+    this.notifyService.showError(message, title)
   }
 
 }

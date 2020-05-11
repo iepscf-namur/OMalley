@@ -1,12 +1,16 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { SongServiceService } from '../services/song-service/song-service.service';
-import { ScrollToBottomDirective } from '../services/scroll-to-bottom.directive';
-import { NotificationService } from '../services/notification/notification.service';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { PageScrollInstance, PageScrollService } from 'ngx-page-scroll-core';
 
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+// import { MatTableDataSource } from '@angular/material/table';
+// import { MatSort } from '@angular/material/sort';
+// import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { Router, ActivatedRoute, Params, Data } from '@angular/router';
+
+// import { PageScrollService, EasingLogic } from 'ngx-page-scroll-core'
+
+import { SongServiceService } from '../services/song-service/song-service.service';
+import { NotificationService } from '../services/notification/notification.service';
 
 export interface SongElement {
   id: number;
@@ -21,18 +25,24 @@ export interface SongElement {
 })
 export class PlayComponent implements OnInit {
 
-  @ViewChild(ScrollToBottomDirective)
-  scroll: ScrollToBottomDirective;
+  @ViewChild('containerSong')
+  public containerSong: ElementRef;
+
+  myDuration: number = 150000;
+  fontSize: number = 22;
+  containerHeight: number = 100;
 
   idCatalogSong: any;
   artistName: any;
   songTitle: any;
 
   constructor(
-    //private router: Router,
     private route: ActivatedRoute,
     private songService: SongServiceService,
     private notifyService: NotificationService,
+
+    public pageScrollService: PageScrollService,
+    @Inject(DOCUMENT) private document: any,
     )
   {
     // get the parameters from the parent page
@@ -43,12 +53,17 @@ export class PlayComponent implements OnInit {
   
   ArtistName: string = '';
   SongTitle: string = '';
-  mySong: string = '';
+  theSongSing: string = '';
 
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  //@ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  //@ViewChild(MatSort, {static: true}) sort: MatSort;
 
   ngOnInit(): void {
+    this.pageScrollService.scroll({
+      document: this.document,
+      scrollTarget: '.theEnd',
+    });
+
     // set the titles
     this.ArtistName = this.artistName;
     this.SongTitle = this.songTitle;
@@ -60,24 +75,62 @@ export class PlayComponent implements OnInit {
     this.songService.getOne(idCatalogSong)
     .subscribe(response => {
       let result = response as SongElement;
-      this.mySong = result.song;
+      this.theSongSing = result.song;
+      document.getElementById('containerSong').innerHTML = 
+        "<p>" + 
+        "<label " +
+        "id=" + "\"" + "start" + "\"" +
+        ">Start</label>" +
+        "</p>" +
+
+        "<p>" + this.theSongSing + "</p> " +
+
+        "<p>" + 
+        "<label " +
+        "id=" + "\"" + "end" + "\"" +
+        ">End</label>" +
+        "</p>"
     });
   }
 
-  showToasterSuccess(title, message) {
-    this.notifyService.showSuccess(title, message)
+  public startDefaultNamespaceScrolls() {
+
+    const pageScrollInstance2: PageScrollInstance = this.pageScrollService.create({
+      document: this.document,
+      duration: this.myDuration,
+      scrollTarget: '#end',
+      scrollViews: [this.containerSong.nativeElement],
+    });
+
+    this.pageScrollService.start(pageScrollInstance2);
   }
 
-// ---------------------------------
-  // TO BE TESTED SOMETHING LIKE THIS
-// ---------------------------------
-// ---------------------------------
-// ---------------------------------
-// ---------------------------------
-// ---------------------------------
-scrollToLine($textarea, lineNumber) {
-    var lineHeight = parseInt($textarea.css('line-height'));
-    $textarea.scrollTop(lineNumber * lineHeight);      
+  public resetDefaultNameScrolls() {
+    // Jump to the top inside each container
+    const pageScrollInstance2: PageScrollInstance = this.pageScrollService.create({
+      document: this.document,
+      duration: 0,
+      scrollTarget: '#start',
+      scrollViews: [this.containerSong.nativeElement],
+    });
+
+    this.pageScrollService.start(pageScrollInstance2);
+  }
+
+  save() {
+    this.showToasterSuccess("We'll save the setup here", "Songs");
+  }
+
+  public stopDefaultNamespaceScrolls() {
+    this.pageScrollService.stopAll('default');
+  }
+
+  public stopCustomNamespaceScrolls() {
+    this.pageScrollService.stopAll('customSpace');
+  }
+
+  showToasterSuccess(message, title) {
+    this.notifyService.showSuccess(message, title)
   }
 
 }

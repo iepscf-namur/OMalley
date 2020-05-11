@@ -316,16 +316,16 @@ export class UserComponent implements OnInit {
       this.method = "createUser";
    }
 
-   showToasterSuccess(title, message) {
-      this.notifyService.showSuccess(title, message)
+   showToasterSuccess(message, title) {
+      this.notifyService.showSuccess(message, title)
    }
 
-   showToasterError(title, message) {
-      this.notifyService.showError(title, message)
+   showToasterError(message, title) {
+      this.notifyService.showError(message, title)
    }
 
-   showToasterInfo(title, message) {
-      this.notifyService.showInfo(title, message)
+   showToasterInfo(message, title) {
+      this.notifyService.showInfo(message, title)
    }
 
 }
