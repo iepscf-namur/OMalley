@@ -30,6 +30,8 @@ import { UserComponent } from './user/user.component';
 import { LoadComponent } from './load/load.component';
 import { PlayComponent } from './play/play.component';
 import { DeleteupdateComponent } from './deleteupdate/deleteupdate.component';
+import { AuthGuard } from './guards/auth-guard.component';
+import { AdminGuard } from './guards/admin-guard.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +69,8 @@ import { DeleteupdateComponent } from './deleteupdate/deleteupdate.component';
     FlexLayoutModule
   ],
   providers: [
+    AdminGuard,
+    AuthGuard
   //  CatalogServiceComponent
   //  UserServiceComponent
   //  LoginServiceComponent

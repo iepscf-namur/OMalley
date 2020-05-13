@@ -28,7 +28,6 @@ export class ModalLoginComponent implements OnInit {
   button = "btn btn-outline-info my-2 my-sm-0";
   buttonText = "Login";
 
-//   // private loggedInStatus = JSON.parse(localStorage.getItem('loggedIn') || 'false');
   private loggedInStatus = JSON.parse(this.cookieService.get('loggedIn') || 'false');
 
   closeResult: string;
@@ -38,7 +37,6 @@ export class ModalLoginComponent implements OnInit {
     private service : LoginService,
     private cookieService : CookieService,
     private router : Router,
-//     private route : ActivatedRoute,
     private notifyService: NotificationService
   ) { }
 
@@ -96,13 +94,9 @@ export class ModalLoginComponent implements OnInit {
       this.cookieService.set('userRole', this.service.getCurrentUser().IdRoleUser)
       this.cookieService.set('username',  this.service.getCurrentUser().Login);
 
-      // AuthGuard added the url we wanted originally to access as URL params
-      // It here is one, we navigate to it, if not to homepage
-//    let returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-//    this.router.navigate([returnUrl || '/']);
-              
-      this.username = this.service.getCurrentUser().sub;
+      this.username = this.service.getCurrentUser().UserName;
       this.showToasterSuccess('Bienvenue ' + this.username, "Login");
+
     } else {
       this.showToasterError("Utilisateur ou mot de passe incorrect", "Login");
     }
