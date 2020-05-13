@@ -24,9 +24,9 @@
                             (click)="myDuration = myDuration - 500"><mat-icon>add</mat-icon></button>
 
                         <button mat-raised-button color="primary" style="width: 8px; height: 35px; margin-right:3px;"
-                            (click)="fontSize = fontSize - 1"><mat-icon>format_indent_decrease</mat-icon></button>
+                            (click)="myFontSize = myFontSize - 1"><mat-icon>format_indent_decrease</mat-icon></button>
                         <button mat-raised-button color="primary" style="width: 8px; height: 35px; margin-right:15px;"
-                            (click)="fontSize = fontSize + 1"><mat-icon>format_indent_increase</mat-icon></button>
+                            (click)="myFontSize = myFontSize + 1"><mat-icon>format_indent_increase</mat-icon></button>
 
                         <button mat-raised-button color="primary" style="width: 8px; height: 35px; margin-right:0px;"
                             (click)="save()" id="saveButton"><mat-icon>save</mat-icon></button>
@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div fxFlex fxLayout="column" fxLayout.gt-sm="row wrap" fxLayoutGap="5px" fxLayoutAlign.gt-sm="center"
-                [style]="{'font-size': fontSize + 'px', 'height': containerHeight + 'px', 'background-color': 'white'}">
+                [style]="{'font-size': myFontSize + 'px', 'background-color': 'white'}">
                 <div #containerSong id="containerSong" class="scrollContainer"></div>
             </div>
         </div>

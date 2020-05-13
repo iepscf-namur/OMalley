@@ -10,8 +10,15 @@ import { Router, ActivatedRoute, Params, Data } from '@angular/router';
 // import { PageScrollService, EasingLogic } from 'ngx-page-scroll-core'
 
 import { SongServiceService } from '../services/song-service/song-service.service';
+import { SetupServiceService } from './../services/setup-service/setup-service.service';
 import { NotificationService } from '../services/notification/notification.service';
 
+export interface SetupElement {
+  id: number;
+  idCatalogSong: number;
+  duration: number;
+  fontSize: number;
+}
 export interface SongElement {
   id: number;
   idCatalogSong: number;
@@ -28,9 +35,8 @@ export class PlayComponent implements OnInit {
   @ViewChild('containerSong')
   public containerSong: ElementRef;
 
-  myDuration: number = 150000;
-  fontSize: number = 22;
-  containerHeight: number = 100;
+  myDuration: number = 200000;
+  myFontSize: number = 20;
 
   idCatalogSong: any;
   artistName: any;
@@ -39,6 +45,7 @@ export class PlayComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private songService: SongServiceService,
+    private setupService: SetupServiceService, 
     private notifyService: NotificationService,
 
     public pageScrollService: PageScrollService,
@@ -71,25 +78,23 @@ export class PlayComponent implements OnInit {
     // Search the right song; get the parameter from the previous page
     let idCatalogSong = "\"" + this.idCatalogSong + "\"";
 
+    // Get the parameters(setup) of the song
+    this.setupService.getOne(idCatalogSong)
+    .subscribe(response => {
+      let result = response as SetupElement;
+      this.myDuration = result.duration;
+      this.myFontSize = result.fontSize;
+    })
+
     // Get the song
     this.songService.getOne(idCatalogSong)
     .subscribe(response => {
       let result = response as SongElement;
       this.theSongSing = result.song;
       document.getElementById('containerSong').innerHTML = 
-        "<p>" + 
-        "<label " +
-        "id=" + "\"" + "start" + "\"" +
-        ">Start</label>" +
-        "</p>" +
-
+        "<p>" + "<label " + "id=" + "\"" + "start" + "\"" + ">Start</label>" + "</p>" +
         "<p>" + this.theSongSing + "</p> " +
-
-        "<p>" + 
-        "<label " +
-        "id=" + "\"" + "end" + "\"" +
-        ">End</label>" +
-        "</p>"
+        "<p>" + "<label " + "id=" + "\"" + "end" + "\"" + ">End</label>" + "</p>"
     });
   }
 
@@ -118,7 +123,15 @@ export class PlayComponent implements OnInit {
   }
 
   save() {
-    this.showToasterSuccess("We'll save the setup here", "Songs");
+    let setup = [{idCatalogSong: this.idCatalogSong, duration: this.myDuration, fontSize : this.myFontSize}]
+    let theOldIdCatalogSong = "\"" + this.idCatalogSong +"\"";
+    this.setupService.update(setup, theOldIdCatalogSong)
+    .subscribe(response => {
+      setup['idCatalogSong'] = this.idCatalogSong;
+      setup['duration'] = this.myDuration;
+      setup['fontSize'] = this.myFontSize;
+      this.showToasterSuccess("Setup saved", "Songs")
+    })
   }
 
   public stopDefaultNamespaceScrolls() {

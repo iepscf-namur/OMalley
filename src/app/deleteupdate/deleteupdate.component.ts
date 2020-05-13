@@ -11,6 +11,7 @@ import { AppError } from './../common/validators/app-error';
 
 import { CatalogServiceComponent } from './../services/catalog-service/catalog-service.component';
 import { SongServiceService } from './../services/song-service/song-service.service';
+import { SetupServiceService } from './../services/setup-service/setup-service.service';
 import { NotificationService } from '../services/notification/notification.service';
 
 export interface CatalogElement {
@@ -35,6 +36,7 @@ export class DeleteupdateComponent implements OnInit {
   constructor(
     private catalogService: CatalogServiceComponent,
     private songService: SongServiceService,
+    private setupService: SetupServiceService,
     private notifyService: NotificationService
   ) { }
 
@@ -93,19 +95,32 @@ export class DeleteupdateComponent implements OnInit {
   }
 
   deleteSong(song) {
+    let theCatalogSong = "\"" + song.idSong +"\"";
+
+    this.setupService.delete(theCatalogSong)
+      .subscribe(response => {
+        this.showToasterSuccess("Setup supprimé avec succès", "Songs");
+      }, (error : AppError) => {
+        if (error instanceof NotFoundError){
+            this.showToasterError("Erreur à la suppression du setup", "Songs");
+            throw error;
+        }
+        else throw error;
+      });
+   
     this.songService.delete("\"" + song.songTitle + "\"")
-    .subscribe(response => {
-       //On va maintenant delete le secteur dans notre array
-       this.ELEMENT_DATA.splice(this.getIndex(song),1);
-       this.myDataSource.data = this.ELEMENT_DATA;
-       this.showToasterSuccess("Chanson supprimée avec succès", "Songs");
-    }, (error : AppError) => {
-       if (error instanceof NotFoundError){
-          this.showToasterError("Cette chanson a déjà été supprimée", "Songs");
-          throw error;
-       }
-       else throw error;
-    });
+      .subscribe(response => {
+        //On va maintenant delete le secteur dans notre array
+        this.ELEMENT_DATA.splice(this.getIndex(song),1);
+        this.myDataSource.data = this.ELEMENT_DATA;
+
+      }, (error : AppError) => {
+        if (error instanceof NotFoundError){
+            this.showToasterError("Cette chanson a déjà été supprimée", "Songs");
+            throw error;
+        }
+        else throw error;
+      });
   }
 
   prepapreSongData() {
