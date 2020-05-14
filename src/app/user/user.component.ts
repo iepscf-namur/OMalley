@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { FormControl } from '@angular/forms';
+//import 'rxjs/add/operator/toPromise';
 
 import { NotFoundError } from './../common/not-found-error';
 import { BadRequest } from './../common/bad-request-error';
@@ -12,7 +13,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { NotificationService } from '../services/notification/notification.service';
-import { ɵELEMENT_PROBE_PROVIDERS } from '@angular/platform-browser';
 
 // Naming from the html (matColumnDef=)
 export interface UserElement {
@@ -83,7 +83,6 @@ export class UserComponent implements OnInit {
       }
    }
          
-//   users: any[];
    UserLogin: string = '';
    UserUserName: string = '';
    UserPassword: string = '';
@@ -118,36 +117,28 @@ export class UserComponent implements OnInit {
          allowSearchFilter: false
       };
 
-      // Populate dropbox for Role
-      this.typeRoleService.getAll()
-      .subscribe(response => {
-         this.TYPEROLE_DATA = response as any;
-         this.myDataSourceTypeRole.data = this.TYPEROLE_DATA;
-
-         let dropdown = [];
-         this.myDataSourceTypeRole.data.forEach(element => {
-            dropdown.push({id: element.id, name: element.name, description: element.description});
-         })
-         this.dropdownRolesList = dropdown;
+      // Populates roles
+      this.findRoles().then( () => {
+         this.myDataSource.paginator = this.paginator;
+         this.myDataSource.sort = this.sort;
+   
+         this.service.getAll()
+         .toPromise()
+         .then(response => {
+            //this.ELEMENT_DATA = response as UserElement[];
+            var result = response as UserElement[];
+            var myList = [];
+            result.forEach(element => {
+               let role: string = '';
+               role = this.findOneRole(Number(element.idRoleUser));
+               myList.push({login: element.login, userName: element.userName, 
+                  password: element.password, idRoleUser: role});
+               })
+            this.ELEMENT_DATA = myList;
+            this.myDataSource.data = this.ELEMENT_DATA;
+         })   
       });
 
-      this.myDataSource.paginator = this.paginator;
-      this.myDataSource.sort = this.sort;
-
-      this.service.getAll()
-      .subscribe(response =>  {
-         //this.ELEMENT_DATA = response as UserElement[];
-         var result = response as UserElement[];
-         var myList = [];
-         result.forEach(element => {
-            let role: string = '';
-            role = this.findOneRole(Number(element.idRoleUser));
-            myList.push({login: element.login, userName: element.userName, 
-               password: element.password, idRoleUser: role});
-            })
-         this.ELEMENT_DATA = myList;
-         this.myDataSource.data = this.ELEMENT_DATA;
-      })
    }
 
    onItemSelect(item: any) {
@@ -186,29 +177,28 @@ export class UserComponent implements OnInit {
          let user = [{ login: theLogin, password: thePassword, userName: theUserName, idRoleUser: theIdRoleUser }];
 
          this.service.create(user)
-         .subscribe(
-            response => {
-               user['login'] = theLogin;
-               user['userName'] = theUserName;
-               user['password'] = thePassword;
-               let role: string = '';
-               role = this.findOneRole(Number(theIdRoleUser));
-               user['idRoleUser'] = role;
-               this.ELEMENT_DATA.splice(0, 0, user as any);
-               this.myDataSource.data = this.ELEMENT_DATA;
+         .toPromise()
+         .then(response => {
+            user['login'] = theLogin;
+            user['userName'] = theUserName;
+            user['password'] = thePassword;
+            let role: string = '';
+            role = this.findOneRole(Number(theIdRoleUser));
+            user['idRoleUser'] = role;
+            this.ELEMENT_DATA.splice(0, 0, user as any);
+            this.myDataSource.data = this.ELEMENT_DATA;
 
-               this.resetForm();
-               this.showToasterSuccess("Utilisateur ajouté", "Users");
+            this.resetForm();
+            this.showToasterSuccess("Utilisateur ajouté", "Users");
 
-            },
-            (error: AppError) => {
-               if (error instanceof BadRequest) {
-                  this.showToasterError("Cet utilisateur existe deja", "Users");
-               } else {
-                  throw error;
-               }
+         },
+         (error: AppError) => {
+            if (error instanceof BadRequest) {
+               this.showToasterError("Cet utilisateur existe deja", "Users");
+            } else {
+               throw error;
             }
-         )
+         })
       }
    }
 
@@ -245,7 +235,8 @@ export class UserComponent implements OnInit {
          let user = [{ login: theLogin, password: thePassword, userName: theUserName, idRoleUser: theIdRoleUser }];
 
          this.service.update(user, theOldLogin)
-         .subscribe(response => {
+         .toPromise()
+         .then(response => {
             user['login'] = theLogin;
             user['password'] = thePassword;
             user['userName'] = theUserName;
@@ -289,8 +280,30 @@ export class UserComponent implements OnInit {
       this.index = this.getIndex(input);
    }
    
-   findOneRole(myId: number): string {
+   findRoles() {
+      // Populate dropbox for Role
+      let promise = new Promise((resolve, reject) => {
+         this.typeRoleService.getAll()
+         .toPromise()
+         .then(response => {
+            this.TYPEROLE_DATA = response as any;
+            this.myDataSourceTypeRole.data = this.TYPEROLE_DATA;
 
+            let dropdown = [];
+            this.myDataSourceTypeRole.data.forEach(element => {
+               dropdown.push({id: element.id, name: element.name, description: element.description});
+            })
+            this.dropdownRolesList = dropdown;
+            resolve();
+         },
+         msg => {
+            reject();
+         })
+      });
+      return promise;
+   }
+
+   findOneRole(myId: number): string {
       let myName = "";
       this.myDataSourceTypeRole.data.forEach(element => {
          if (element.id == myId) {

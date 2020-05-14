@@ -95,7 +95,7 @@ export class ModalLoginComponent implements OnInit {
       this.cookieService.set('username',  this.service.getCurrentUser().Login);
 
       this.username = this.service.getCurrentUser().UserName;
-      this.showToasterSuccess('Bienvenue ' + this.username, "Login");
+      this.showToasterSuccess("Bienvenue ", "Login");
 
     } else {
       this.showToasterError("Utilisateur ou mot de passe incorrect", "Login");

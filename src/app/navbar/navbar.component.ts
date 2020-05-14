@@ -16,10 +16,8 @@ export class NavbarComponent implements OnInit {
     private cookieService: CookieService
   ) { }
 
-  username: string = "";
-  
   ngOnInit(): void {
-    this.username = this.loginService.getCurrentUser().Surname;
+
   }
 
 }

@@ -12,6 +12,7 @@ import { NotificationService } from './../notification/notification.service';
 import { JwtHelperService } from '@auth0/angular-jwt'
 import { CookieService } from 'ngx-cookie-service';
 import { isConditionalExpression } from 'typescript';
+import { promise } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
@@ -45,24 +46,34 @@ export class LoginService extends DataServiceComponent {
   }
 
   checkCredentials(ressource) {
-    this.getLogin(ressource)
-    .subscribe(response =>  {
-      console.log(response)
-      let result = response;
-      this.resultat = result;
-      if (result && result['token']) {
-        this.cookieService.set('token', JSON.stringify(result['token']));
-        this.cookieService.set('loggedIn', "true")
-        return true;
-      } else {
-        return false;
-      }
-    }, (error : AppError) => {
-      if (error instanceof NotFoundError){
-        this.showToasterError("Erreur de connexion", "get credentials")
-      }
+    this.doLogin(ressource).then( () => {
+
     })
   }
+
+  doLogin(ressource) {
+    let promise = new Promise((resolve, reject) => {
+      this.getLogin(ressource)
+      .toPromise()
+      .then(response => {
+        let result = response;
+        this.resultat = result;
+        if (result && result['token']) {
+          this.cookieService.set('token', JSON.stringify(result['token']));
+          this.cookieService.set('loggedIn', "true")
+          //return true;
+        } else {
+          this.cookieService.set('loggedIn', "false")
+          //return false;
+        }
+      }, (error : AppError) => {
+        if (error instanceof NotFoundError){
+          this.showToasterError("Erreur de connexion", "get credentials")
+        }
+      })
+    })
+    return promise;
+  };
 
   logout() {
     this.cookieService.deleteAll();
@@ -89,8 +100,11 @@ export class LoginService extends DataServiceComponent {
     return jwtHelper.decodeToken(token);
   }
 
+  showToasterSuccess(message, title) {
+    this.notifyService.showSuccess(message, title)
+  }
+
   showToasterError(message, title) {
     this.notifyService.showError(message, title)
   }
-
 }
